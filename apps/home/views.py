@@ -1,13 +1,17 @@
 # -*- encoding: utf-8 -*-
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .models import Positional_data
 from rest_framework.exceptions import AuthenticationFailed
+from django.views.decorators.csrf import csrf_exempt
 from . models import ClientData
+from django.contrib import messages
 # from users.models import Bookmark, Personalisation, User
 # from users.api.serializers import BookmarkSerializer, UserSerializer, PersonalisationSerializer
 import jwt, datetime
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
+import pytz
 
 
 from django import template
@@ -54,8 +58,82 @@ def index(request):
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
+@csrf_exempt
+def save_positional_stock(request):
 
+    dtobj1 = datetime.datetime.utcnow()  # utcnow class method
+    dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)  # replace method
+    dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))  # astimezone method
+    print("India time data_add", dtobj_india)
+    dtobj_india = dtobj_india.strftime("%Y-%m-%d %H:%M")
+    dtobj_indiaa = str(dtobj_india)
+    context = {}
+    if request.method=='POST':
+        limitPrice =0
+        stopPrice =0
+        disclosedQty =0
+        stopLoss =0
+        takeProfit =0
 
+        symbol=request.POST['symbol']
+        Order_Type=request.POST['Order_Type']
+        Stock_Name=request.POST['Stock_Name']
+        qty=request.POST['qty']
+        side=request.POST['side']
+        productType=request.POST['productType']
+        if request.POST['limitPrice']:
+            limitPrice=request.POST['limitPrice']
+        if request.POST['stopPrice']:
+            stopPrice=request.POST['stopPrice']
+        validity=request.POST['validity']
+        if request.POST['disclosedQty']:
+            disclosedQty=request.POST['disclosedQty']
+        if request.POST['stopLoss']:
+            stopLoss=request.POST['stopLoss']
+        if request.POST['takeProfit']:
+            takeProfit=request.POST['takeProfit']
+
+        exchange=request.POST['exchange']
+
+        print("Symbol:", symbol)
+        print("Order Type:", Order_Type)
+        print("Stock Name:", Stock_Name)
+        print("Quantity:", qty)
+        print("Side:", side)
+        print("Product Type:", productType)
+        print("Limit Price:", limitPrice)
+        print("Stop Price:", stopPrice)
+        print("Validity:", validity)
+        print("Disclosed Quantity:", disclosedQty)
+        print("Stop Loss:", stopLoss)
+        print("Take Profit:", takeProfit)
+        print(" exchange:", exchange)
+
+        if(exchange=="nse_eq"):
+            symbol = "NSE:"+symbol+"-EQ"
+        if(exchange=="bse_eq"):
+            symbol = "BSE:"+symbol+"-EQ"
+            print("nse")
+        try:
+            pos_data_entry = Positional_data(time=dtobj_indiaa,symbol=symbol,stock_name=Stock_Name,qty=qty,type=Order_Type,side=side,productType= productType,limitPrice= limitPrice,stopPrice=stopPrice,validity=validity,disclosedQty=disclosedQty,stopLoss=stopLoss,takeProfit=takeProfit)
+            ans = pos_data_entry.save()
+            messages.success(request, 'Stock Added for monitoring')
+            print("meesage sent")
+        except:
+            messages.error(request, 'Failed to Add, Message Jagrit')
+
+        print(Order_Type)
+        print(Stock_Name)
+        last_obj = Positional_data.objects.last()
+        context = {"last_obj":last_obj}
+        html_template = loader.get_template('home/add-stock.html')
+        return HttpResponse(html_template.render(context, request))
+@csrf_exempt
+def addstock(request):
+    last_obj = Positional_data.objects.last()
+    context = {"last_obj":last_obj}
+    html_template = loader.get_template('home/add-stock.html')
+    return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
 def pages(request):

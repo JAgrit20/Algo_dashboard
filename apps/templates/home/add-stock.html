@@ -7,8 +7,10 @@
 
 {% block content %}
 
+
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
+    {% csrf_token %}
     <div class="pcoded-wrapper">
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
@@ -18,11 +20,11 @@
                         <div class="row align-items-center">
                             <div class="col-md-12">
                                 <div class="page-header-title">
-                                    <h5 class="m-b-10">Sample Page</h5>
+                                    <h5 class="m-b-10">Positional Page</h5>
                                 </div>
                                 <ul class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                                    <li class="breadcrumb-item"><a href="javascript:">Sample Page</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:">Positional Page</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -34,6 +36,32 @@
                         <!-- [ Main Content ] start -->
                         <div class="row">
                             <div class="col-sm-12">
+                                {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+
+    <li {% if message.tags == success %} class="{{ message.tags }}"{% endif %}>
+     
+        <button type="button" class="btn btn-success btn-lg btn-block"  data-toggle="tooltip">Stock added for Monitoring</button>
+
+    </li>
+
+   
+    {% endfor %}
+</ul>
+{% endif %}
+                                <!-- {% if messages %}
+                   
+                                {% for message in messages %}
+                                {% if message.tags == success %} 
+                                    <button type="button" class="btn btn-success btn-lg btn-block"  data-toggle="tooltip">Stock added for Monitoring</button>
+                                {% elif message.tags == error %} 
+                                    <button type="button" class="btn btn-danger btn-lg btn-block"  data-toggle="tooltip">Something went wrong Contact Jagrit</button>
+                             
+                                {% endif %}
+                                {% endfor %}    
+                  
+                            {% endif %} -->
                                 <div class="card">
                                     <div class="card-header">
                                         <i class="feather icon-alert-triangle"></i>
@@ -43,6 +71,21 @@
                                         <p> Enter details carefully order might be punched directly As soon as you save
                                             it
                                         </p>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                
+                                        <h5>Last Stock added</h5>
+                                    </div>
+                                    <div class="card-block">
+                                        <p>Time: {{last_obj.time}}</p>
+                                        <p>Stock Name: {{last_obj.stock_name}}</p>
+                                        <p>Stock symbol: {{last_obj.symbol}}</p>
+                                        <p>Stock qty: {{last_obj.qty}}</p>
+                                        <p>order Buy (1) /Sell (-1): {{last_obj.side}}</p>
+                                        <p>order type: {{last_obj.type}}</p>
+
                                     </div>
                                 </div>
                             </div>
@@ -55,100 +98,113 @@
                             <div class="card-body">
                                 <h5>Add Stock</h5>
                                 <hr>
+                                <form method="post" action="/save_positional_stock">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <form>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Order Type</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option>BUY</option>
-                                                    <option>SELL</option>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Order Type</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="side">
+                                                <option value ="1">BUY</option>
+                                                <option value ="-1">SELL</option>
 
-                                                </select>
-                                            </div>
+                                            </select>
+                                        </div>
 
-                                            <div class="form-group">
-                                                <label for="exampleInputPassword1"> Stock Name</label>
-                                                <input type="text" class="form-control" id="exampleInputEmail1"
-                                                    aria-describedby="emailHelp" placeholder="Stock Name">
-                                                <small id="emailHelp" class="form-text text-muted">Name should be in
-                                                    captial letters </small>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleFormControlSelect1">Quantity select</label>
-                                                <input type="text" class="form-control" id="exampleInputEmail1" 
-                                                aria-describedby="emailHelp" placeholder="Quantity">
-                                                
-                                            </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1"> Stock Name</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp" placeholder="Stock Name" name="Stock_Name">
+                                            <small id="emailHelp" class="form-text text-muted">Name should be in
+                                                captial letters </small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleFormControlSelect1">Quantity select</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp" placeholder="Quantity" name="qty">
 
-                                            <div class="form-group form-check">
-                                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </form>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Stop Loss</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp" placeholder="0" name="stopLoss" >
+                                            <small id="emailHelp" class="form-text text-muted">Default => 0 | Provide valid price for CO and BO orders</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Take Profit</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp" placeholder="0" name="takeProfit" >
+                                            <small id="emailHelp" class="form-text text-muted">Default => 0 | Provide valid price for BO orders</small>
+                                        </div>
+
+                                        <button type="submit" class="btn theme-bg text-white f-12 ">Submit</button>
+
                                     </div>
                                     <div class="col-md-6">
-                                        <form>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Stock Symbol</label>
-                                                <input type="text" class="form-control" id="exampleInputEmail1"
-                                                    aria-describedby="emailHelp" placeholder="Stock Name">
-                                                <small id="emailHelp" class="form-text text-muted">Symbol should be in
-                                                    captial letters </small>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Stock Security Id</label>
-                                                <input type="text" class="form-control" id="exampleInputEmail1" disabled
-                                                    aria-describedby="emailHelp" placeholder="Stock Name">
-                                                <small id="emailHelp" class="form-text text-muted">Please dont change
-                                                    this </small>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Product Type</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option>INTRA</option>
-                                                    <!-- <option>SELL</option> -->
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Order Type</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option>MARKET</option>
-                                                    <!-- <option>SELL</option> -->
-                                                </select>
-                                            </div>
-                                            <!-- <div class="form-group">
-                                                    <label for="exampleFormControlSelect1">Stock Exchange</label>
-                                                    <select class="form-control" id="exampleFormControlSelect1">
-                                                        <option>NSE_EQ</option>
-                                                        <option>NSE_FNO</option>
-                                                        <option>NSE_CURRENCY</option>
-                                                        <option>BSE_EQ</option>
-                                                        <option>MCX_COMM</option>
-                                                        <option>IDX_I</option>
-                                                    </select>
-                                                </div> -->
-                                            <!-- <div class="form-group">
-                                                <label for="exampleFormControlSelect1">Instrument Type</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option selected>EQUITY</option>
-                                                    <option>FUTCOM</option>
-                                                    <option>FUTCUR</option>
-                                                    <option>FUTIDX</option>
-                                                    <option>FUTSTK</option>
-                                                    <option>FUTSTK</option>
-                                                </select>
-                                            </div> -->
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Stock Symbol</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp" placeholder="Stock Name" name="symbol">
+                                            <small id="emailHelp" class="form-text text-muted">Symbol should be in
+                                                captial letters </small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Product Type</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="productType">
+                                                <option value="CNC">CNC (carried forward)</option>
+                                                <option value="INTRADAY">INTRADAY</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Validity</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="validity">
+                                                <option value="DAY">DAY (Valid till the end of the day)</option>
+                                                <option value="IOC">IOC (Immediate or Cancel)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Order Type</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="Order_Type">
+                                                <option value="1">LIMIT</option>
+                                                <option value="2">MARKET</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleFormControlSelect1">Stock Exchange</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="exchange">
+                                                <option value="nse_eq">NSE_EQ</option>                                   
+                                                <option value="bse_eq">BSE_EQ</option>
+                                            </select>
+                                        </div>
+
+                                            
                                             
                                             <div class="form-group">
-                                                <label for="exampleFormControlTextarea1">Comment</label>
-                                                <textarea class="form-control" id="exampleFormControlTextarea1"
-                                                    rows="3"></textarea>
+                                                <label for="exampleInputEmail1">Limit Price</label>
+                                                <input type="text" class="form-control" id="exampleInputEmail1"
+                                                    aria-describedby="emailHelp" placeholder="0" name="limitPrice" >
+                                                <small id="emailHelp" class="form-text text-muted">Default => 0 | Provide valid price for Limit and Stoplimit orders</small>
                                             </div>
-                                        </form>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Stop Price</label>
+                                                <input type="text" class="form-control" id="exampleInputEmail1"
+                                                    aria-describedby="emailHelp" placeholder="0" name="stopPrice">
+                                                <small id="emailHelp" class="form-text text-muted">Default => 0 | Provide valid price for Stop and Stoplimit orders</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">DisclosedQty</label>
+                                                <input type="text" class="form-control" id="exampleInputEmail1"
+                                                    aria-describedby="emailHelp" placeholder="0" name="disclosedQty">
+                                                <small id="emailHelp" class="form-text text-muted">Default => 0 | Allowed only for Equity</small>
+                                            </div>
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">Comment</label>
+                                            <textarea class="form-control" id="exampleFormControlTextarea1" name="comments"
+                                                rows="3"></textarea>
+                                            </div>
                                     </div>
                                 </div>
+                            </form>
 
                                 <hr>
 

@@ -47,3 +47,21 @@ class ClientData(models.Model):
     blockedPayoutAmount = models.DecimalField(max_digits=10, decimal_places=2)
     withdrawableBalance = models.DecimalField(max_digits=10, decimal_places=2)
 
+class Positional_data(models.Model):
+    date_time = models.DateTimeField(auto_now_add=True, blank=True)
+    time = models.CharField(max_length=100)
+    stock_name = models.CharField(max_length=100)
+    symbol = models.CharField(max_length=100)
+    qty = models.CharField(max_length=100)
+    type = models.CharField(max_length=100)
+    side = models.CharField(max_length=100)
+    comments = models.TextField(blank=True)
+    productType = models.CharField(max_length=100)
+    limitPrice = models.BigIntegerField(default=0,null=True, blank=True)
+    stopPrice = models.BigIntegerField(default=0,null=True, blank=True)
+    validity = models.CharField(max_length=100,null=True, blank=True,default="DAY")
+    disclosedQty = models.BigIntegerField(max_length=100,null=True, blank=True,default=0)
+    stopLoss = models.DecimalField(max_digits=10, decimal_places=2)
+    takeProfit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+
+
