@@ -144,7 +144,7 @@ def index(request):
     latest_post_data = Fyer_user_all_positions.objects.order_by('-pk').first()
     print("--------------------------------------------------------------------")
     print(latest_client_data)
-    all_posti_stocks = Positional_data.objects.order_by('-date_time')[:5]
+    all_posti_stocks = Positional_data.objects.filter(trade_executed=False).order_by('-date_time')[:5]
     all_posti_stocks_all = Positional_data.objects.order_by('-date_time')
     
     context = {'segment': 'index','latest_client_data':latest_client_data,'latest_post_data':latest_post_data,'all_posti_stocks_all':all_posti_stocks_all ,'all_posti_stocks':all_posti_stocks,'Positional_data_count':Positional_data_count}
