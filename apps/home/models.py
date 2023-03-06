@@ -77,4 +77,27 @@ class Positional_data(models.Model):
     stopLoss = models.DecimalField(max_digits=10, decimal_places=2)
     takeProfit = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
 
+class Nifty_Data(models.Model):
+
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    entry_time = models.CharField(max_length=10)
+    Nifty_entry = models.FloatField()
+    Nifty_exit = models.FloatField(blank=True)
+    exit_time = models.CharField(blank=True,max_length=10)
+    move = models.BigIntegerField(blank=True,null=True)
+    counter_nifty_data = models.CharField(max_length=10,blank=True,null=True)
+    call_put = models.CharField(max_length=10,blank=True,null=True)
+    Event_type = models.CharField(max_length=10,blank=True,null=True)
+
+class Vwap_Telegram_data(models.Model):
+
+    date_time = models.DateTimeField(auto_now_add=True, blank=True)
+    time = models.CharField(max_length=10)
+    Count = models.BigIntegerField()
+    Nifty_strike = models.FloatField()
+    entry_price = models.FloatField()
+    exit_price = models.FloatField()
+    type_of_option =models.CharField(max_length=10)
+    net_point_captured = models.FloatField()
+
 

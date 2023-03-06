@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from .models import Positional_data
 from rest_framework.exceptions import AuthenticationFailed
 from django.views.decorators.csrf import csrf_exempt
-from . models import ClientData,Fyer_user_profile,Fyer_user_all_positions
+from . models import ClientData,Fyer_user_profile,Fyer_user_all_positions,Vwap_Telegram_data
 from django.contrib import messages
 # from users.models import Bookmark, Personalisation, User
 # from users.api.serializers import BookmarkSerializer, UserSerializer, PersonalisationSerializer
@@ -169,6 +169,13 @@ def addstock(request):
     last_obj = Positional_data.objects.last()
     context = {"last_obj":last_obj}
     html_template = loader.get_template('home/add-stock.html')
+    return HttpResponse(html_template.render(context, request))
+@csrf_exempt
+def vwap_data(request):
+    latest_post_data = Vwap_Telegram_data.objects.order_by('-pk')
+
+    context = {"last_obj":latest_post_data}
+    html_template = loader.get_template('home/vwap_data_record.html')
     return HttpResponse(html_template.render(context, request))
 
 @login_required(login_url="/login/")
