@@ -16,6 +16,7 @@ import datetime
 import sys, os
 import math
 from bs4 import BeautifulSoup
+from apps.home.models import Positional_data
 
 
 import json
@@ -164,6 +165,35 @@ def update_token():
 	print(all_user_data['data']['name'])
 	print(all_user_data['data']['email_id'])
 	print(all_user_data['data']['mobile_number'])
+
+def Place_positional_order():
+	with open("store_token.txt","r") as outfile:
+		access_token= outfile.read()
+		print("access",access_token)
+	# print(get_access_token())
+	fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+	all_posti_stocks = Positional_data.objects.filter(trade_executed=False).order_by('-date_time')[:5]
+	# symbol = {'symbols': 'NSE:TATAMOTORS-EQ'}
+	# print(fyers.quotes(symbol))
+	for i in all_posti_stocks:
+		print(i.qty)
+		data = {
+			"symbol":i.symbol,
+			"qty":int(i.qty),
+			"type":int(i.type),
+			"side":int(i.side),
+			"productType":i.productType,
+			"limitPrice":int(i.limitPrice),
+			"stopPrice":int(i.stopPrice),
+			"validity":i.validity,
+			"disclosedQty":int(i.disclosedQty),
+			"offlineOrder":"False",
+			"stopLoss":int(i.stopLoss),
+			"takeProfit":int(i.takeProfit)
+			}
+
+		resp = fyers.place_order(data)
+		print(resp)
 
 
 
