@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from .models import Positional_data
 from rest_framework.exceptions import AuthenticationFailed
 from django.views.decorators.csrf import csrf_exempt
-from . models import ClientData
+from . models import ClientData,Fyer_user_profile,Fyer_user_all_positions
 from django.contrib import messages
 # from users.models import Bookmark, Personalisation, User
 # from users.api.serializers import BookmarkSerializer, UserSerializer, PersonalisationSerializer
@@ -22,39 +22,130 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 # from .models import Counter, PCR_data,Telegram_data,BTC_Data,Nifty_Data,Stocastic_Data,Stocastic_Data_DXY
 
+import json
+import requests
+import time
+import pyotp
+import os
+import requests
+from urllib.parse import parse_qs,urlparse
+import sys
+from fyers_api import fyersModel
+from fyers_api import accessToken
+
+
 from dhanhq import dhanhq
 
 cleintid = '1100082542'
 accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJkaGFuIiwicGFydG5lcklkIjoiIiwiZXhwIjoxNjc5MTE3NjIyLCJ0b2tlbkNvbnN1bWVyVHlwZSI6IlNFTEYiLCJkaGFuQ2xpZW50SWQiOiIxMTAwMDgyNTQyIn0.WxEaNAzJxz-ogfOotKST82wk0BjZiNsi-nUnQZbk_djd0iJ_R04Y-cuPw4rLJyixJ7kdxLg1ivj5e8f3ScqmDg'
 
 dhan = dhanhq(cleintid,accessToken)
+
+
+# In[ ]:
+
+
+
+APP_ID =  "TU9RDXY8QS" # App ID from myapi dashboard is in the form appId-appType. Example - EGNI8CE27Q-100, In this code EGNI8CE27Q will be APP_ID and 100 will be the APP_TYPE
+APP_TYPE = "100"
+SECRET_KEY = '9FL2VROLMN'
+client_id= f'{APP_ID}-{APP_TYPE}'
+
+FY_ID = "XA42364"  # Your fyers ID
+APP_ID_TYPE = "2"  # Keep default as 2, It denotes web login
+TOTP_KEY = "JGNW2VQHHYGGBDENCT2WEIXKJGR3CBTF"  # TOTP secret is generated when we enable 2Factor TOTP from myaccount portal
+PIN = "2318"  # User pin for fyers account
+
+REDIRECT_URI = "http://127.0.0.1:8000/api/fyers_success"  # Redirect url from the app.
+
+
+# API endpoints
+
+BASE_URL = "https://api-t2.fyers.in/vagator/v2"
+BASE_URL_2 = "https://api.fyers.in/api/v2"
+URL_SEND_LOGIN_OTP = BASE_URL + "/send_login_otp"   #/send_login_otp_v2
+URL_VERIFY_TOTP = BASE_URL + "/verify_otp"
+URL_VERIFY_PIN = BASE_URL + "/verify_pin"
+URL_TOKEN = BASE_URL_2 + "/token"
+URL_VALIDATE_AUTH_CODE = BASE_URL_2 + "/validate-authcode"
+SUCCESS = 1
+ERROR = -1
+
+
+def send_login_otp(fy_id, app_id):
+    try:
+        result_string = requests.post(url=URL_SEND_LOGIN_OTP, json= {"fy_id": fy_id, "app_id": app_id })
+        if result_string.status_code != 200:
+            return [ERROR, result_string.text]
+        result = json.loads(result_string.text)
+        request_key = result["request_key"]
+        return [SUCCESS, request_key]
+    except Exception as e:
+        return [ERROR, e]
+
+def verify_totp(request_key, totp):
+    try:
+        result_string = requests.post(url=URL_VERIFY_TOTP, json={"request_key": request_key,"otp": totp})
+        if result_string.status_code != 200:
+            return [ERROR, result_string.text]
+        result = json.loads(result_string.text)
+        request_key = result["request_key"]
+        return [SUCCESS, request_key]
+    except Exception as e:
+        return [ERROR, e]
+
+
+
 @login_required(login_url="/login/")
 def index(request):
 
-    try:
-        data_dict = dhan.get_fund_limits()
-        print(data_dict)
-        client_data = ClientData(status=data_dict['status'],
-                                remarks=data_dict['remarks'],
-                                dhanClientId=data_dict['data']['dhanClientId'],
-                                availableBalance=data_dict['data']['availabelBalance'],
-                                sodLimit=data_dict['data']['sodLimit'],
-                                collateralAmount=data_dict['data']['collateralAmount'],
-                                receiveableAmount=data_dict['data']['receiveableAmount'],
-                                utilizedAmount=data_dict['data']['utilizedAmount'],
-                                blockedPayoutAmount=data_dict['data']['blockedPayoutAmount'],
-                                withdrawableBalance=data_dict['data']['withdrawableBalance'])
+    # filtered_rows = MyModel.objects.filter(field_name=value)
 
-        client_data.save()
+    # row_count = filtered_rows.count()
+
+    
+    Positional_data_count = Positional_data.objects.count()
+
+
+    with open("store_token.txt","r") as outfile:
+        access_token= outfile.read()
+        print("access",access_token)
+    try:
+        # print(get_access_token())
+        fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+        # symbol = {'symbols': 'NSE:TATAMOTORS-EQ'}
+        # print(fyers.quotes(symbol))
+        all_user_data = fyers.get_profile()
+
+        fid = (all_user_data['data']['fy_id'])
+        name = (all_user_data['data']['name'])
+        email = (all_user_data['data']['email_id'])
+        mob = (all_user_data['data']['mobile_number'])
+
+        fyer_user_profile = Fyer_user_profile(fy_id= fid, name = name, email = email, mobile_no = mob)
+        fyer_user_profile.save()
+
+        all_post_data = fyers.holdings()
+
+        count_total = all_post_data['overall']['count_total']
+        total_investment = all_post_data['overall']['total_investment']
+        total_current_value = all_post_data['overall']['total_current_value']
+        total_pl = all_post_data['overall']['total_pl']
+        pnl_perc = all_post_data['overall']['pnl_perc']
+
+        all_post_data = Fyer_user_all_positions(count_total=count_total,total_investment=total_investment,total_current_value=total_current_value,total_pl=total_pl,pnl_perc=pnl_perc)
+        all_post_data.save()
+
     except Exception as ex:
         template = "An exception of type {0} occurred. Arguments:\n{1!r}"
         message = template.format(type(ex).__name__, ex.args)
         print (message)
-    latest_client_data = ClientData.objects.order_by('-pk').first()
+    latest_client_data = Fyer_user_profile.objects.order_by('-pk').first()
+    latest_post_data = Fyer_user_all_positions.objects.order_by('-pk').first()
     print("--------------------------------------------------------------------")
     print(latest_client_data)
     
-    context = {'segment': 'index','latest_client_data':latest_client_data}
+    context = {'segment': 'index','latest_client_data':latest_client_data,'latest_post_data':latest_post_data,'Positional_data_count':Positional_data_count}
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 

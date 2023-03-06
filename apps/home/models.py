@@ -46,6 +46,18 @@ class ClientData(models.Model):
     utilizedAmount = models.DecimalField(max_digits=10, decimal_places=2)
     blockedPayoutAmount = models.DecimalField(max_digits=10, decimal_places=2)
     withdrawableBalance = models.DecimalField(max_digits=10, decimal_places=2)
+class Fyer_user_profile(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    fy_id = models.CharField(max_length=100)
+    mobile_no = models.CharField(max_length=100)
+
+class Fyer_user_all_positions(models.Model):
+    count_total = models.BigIntegerField()
+    total_investment = models.DecimalField(max_digits=20, decimal_places=2)
+    total_current_value = models.DecimalField(max_digits=20, decimal_places=2)
+    total_pl = models.DecimalField(max_digits=20, decimal_places=2)
+    pnl_perc = models.DecimalField(max_digits=20, decimal_places=2)    
 
 class Positional_data(models.Model):
     date_time = models.DateTimeField(auto_now_add=True, blank=True)
