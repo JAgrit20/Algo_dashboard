@@ -7,6 +7,7 @@
 
 {% block content %}
 
+   
     <!-- [ Main Content ] start -->
     <div class="pcoded-main-container">
         <div class="pcoded-wrapper">
@@ -23,8 +24,8 @@
                         <div class="card-body">
                             <button type="button" class="btn btn-outline-primary" data-toggle="tooltip">Fyers Id: {{latest_client_data.fy_id}}</button>
                             <button type="button" class="btn btn-outline-success" data-toggle="tooltip">Account Holder Name: {{latest_client_data.name}} </button> </br>
-                            <button type="button" class="btn btn-outline-light" data-toggle="tooltip">Account Holder Mobile: {{latest_client_data.mobile_no}}</button>
                             <button type="button" class="btn btn-outline-warning" data-toggle="tooltip">Account Holder email: {{latest_client_data.email}}</button>
+                            <button type="button" class="btn btn-outline-info" data-toggle="tooltip">Account Holder Mobile: {{latest_client_data.mobile_no}}</button>
 
                                 <p class="mb-0"></p>
                             </div>
@@ -39,8 +40,8 @@
                                 <div class="card-block">
                                     <button type="button" class="btn btn-info" title="All Holding on fyers" data-toggle="tooltip">Total Number of Holdings: {{latest_post_data.count_total}}</button>
                                     <button type="button" class="btn btn-success" title="No. of Deployed Option Strategies" data-toggle="tooltip">Number of Option Strategies Live: 1 </button>
-                                    <!-- <button type="button" class="btn btn-secondary" title="Collateral Amount" data-toggle="tooltip">Collateral Amount: {{latest_post_data.total_current_value}}</button> -->
-                                    <button type="button" class="btn btn-light" title="No. of Deployed Future Strategies" data-toggle="tooltip">Number of Future Strategies Live: 0</button>
+                                    <button type="button" class="btn btn-warning" title="No. of Deployed Future Strategies" data-toggle="tooltip">Number of Future Strategies Live: 0</button>
+                                    <button type="button" class="btn btn-danger" title="No. of trades currently running" data-toggle="tooltip">Number of Ongoing Trades: 0</button>
                                     <!-- <button type="button" class="btn btn-light" title="Withdrawable Balance" data-toggle="tooltip">Withdrawable Balance  {{latest_post_data.pnl_perc}}  </button> -->
                                     <a href="https://fyers.in/web/"> <button type="button" class="btn btn-link" title="Fyers Portal" data-toggle="tooltip">Fyers Portal</button></a>
                                 </div>
@@ -86,7 +87,7 @@
                                                 <div class="col-9">
                                                     <h3 class="f-w-300 d-flex align-items-center  m-b-0">
                                                         {% if latest_post_data.total_current_value >=  latest_post_data.total_investment %}
-                                                        <i   class="feather icon-arrow-up text-c-red f-30 m-r-10"></i>
+                                                        <i   class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>
                                                         {% else %}
                                                         <i   class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>
                                                         {% endif %}
@@ -122,7 +123,7 @@
                                                 <div class="col-9">
                                                     <h3 class="f-w-300 d-flex align-items-center  m-b-0">
                                                         {% if latest_post_data.total_pl >= 0 %}
-                                                        <i   class="feather icon-arrow-up text-c-red f-30 m-r-10"></i>
+                                                        <i   class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>
                                                         {% else %}
                                                         <i   class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>
                                                         {% endif %}
@@ -161,100 +162,49 @@
                                             <div class="table-responsive">
                                                 <table class="table table-hover">
                                                     <tbody>
-                                                    <tr class="unread">
-                                                        
-                                                        <td>     
-                                                      <div class="navbar-brand header-logo">
-                                                            <a href="/" class="b-brand">
-                                                                <div class="b-bg">
-                                                                    <i class="feather icon-check-circle"></i>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="mb-1">Tata Power</h6>
-                                                            <!-- <p class="m-0">Lorem Ipsum is simply…</p> -->
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="text-muted"><i
-                                                                    class="fas fa-circle text-c-green f-10 m-r-15"></i>11
-                                                                Jan 12:56</h6>
-                                                        </td>
-                                                        <td><a href="#!"
-                                                                class="label theme-bg2 text-white f-12">Reject</a><a
-                                                                href="#!" class="label theme-bg text-white f-12">Approve</a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="unread">
-                                                        <td><div class="navbar-brand header-logo">
-                                                            <a href="/" class="b-brand">
-                                                                <div class="b-bg">
-                                                                    <i class="feather icon-check-circle"></i>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="mb-1">DrReddy</h6>
-                                                            <!-- <p class="m-0">Lorem Ipsum is simply text of…</p> -->
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="text-muted"><i
-                                                                    class="fas fa-circle text-c-red f-10 m-r-15"></i>18 Jan
-                                                                10:35</h6>
-                                                        </td>
-                                                        <td><a href="#!"
-                                                                class="label theme-bg2 text-white f-12">Reject</a><a
-                                                                href="#!" class="label theme-bg text-white f-12">Approve</a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="unread">
-                                                        <td><div class="navbar-brand header-logo">
-                                                            <a href="/" class="b-brand">
-                                                                <div class="b-bg">
-                                                                    <i class="feather icon-check-circle"></i>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="mb-1">Reliance Power</h6>
-                                                            <!-- <p class="m-0">Lorem Ipsum is simply…</p> -->
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="text-muted"><i
-                                                                    class="fas fa-circle text-c-green f-10 m-r-15"></i>9 Feb
-                                                                17:38</h6>
-                                                        </td>
-                                                        <td><a href="#!"
-                                                                class="label theme-bg2 text-white f-12">Reject</a><a
-                                                                href="#!" class="label theme-bg text-white f-12">Approve</a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="unread">
-                                                        <td><div class="navbar-brand header-logo">
-                                                            <a href="/" class="b-brand">
-                                                                <div class="b-bg">
-                                                                    <i class="feather icon-check-circle"></i>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="mb-1">Sun Pharma</h6>
-                                                            <!-- <p class="m-0">Lorem Ipsum is simply text of…</p> -->
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="text-muted f-w-300"><i
-                                                                    class="fas fa-circle text-c-red f-10 m-r-15"></i>15 Feb
-                                                                12:56</h6>
-                                                        </td>
-                                                        <td><a href="#!"
-                                                                class="label theme-bg2 text-white f-12">Reject</a><a
-                                                                href="#!" class="label theme-bg text-white f-12">Approve</a>
-                                                        </td>
-                                                    </tr>
+                                                        <th>symbol</th>
+                                                        <th>Stock name</th>
+                                                        <th>Excuted or not & Buy / Sell </th>
+                                                        <th>Date time added</th>
+                                                        <th>limit Price</th>
+                                                        <th>Action</th>
+                                                   
+           {% for i in all_posti_stocks %}
+           <tr class="unread">
+               <td>     
+             <div class="navbar-brand header-logo">
+                   <a href="/" class="b-brand">
+                       <div class="b-bg">
+                           <i class="feather icon-check-circle"></i>
+                       </div>
+                   </a>
+               </div>
+               </td>
+               <td>
+                   <h6 class="mb-1">{{i.stock_name}}</h6>
+               </td>
+
+               <td> <h6 class="mb-1"> 
+                   <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                   
+                   {% if i.side == '1' %} BUY {% else %} SELL {% endif %}
+
+               </h6>
+                   
+               </td>
+               <td>
+                   <h6 class="text-muted">{{i.time}}</h6>
+               </td>
+               <td>
+                   <h6 class="text-muted">₹ {{i.limitPrice}}</h6>
+               </td>
+
+               <td><a href="#!"
+                       class="label theme-bg2 text-white f-12">Cancel Trade</a>
+               </td>
+           </tr>
+         
+           {% endfor %}
 
                                                     </tbody>
                                                 </table>

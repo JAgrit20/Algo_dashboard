@@ -79,12 +79,13 @@
                                         <h5>Last Stock added</h5>
                                     </div>
                                     <div class="card-block">
-                                        <p>Time: {{last_obj.time}}</p>
-                                        <p>Stock Name: {{last_obj.stock_name}}</p>
-                                        <p>Stock symbol: {{last_obj.symbol}}</p>
-                                        <p>Stock qty: {{last_obj.qty}}</p>
-                                        <p>order Buy (1) /Sell (-1): {{last_obj.side}}</p>
-                                        <p>order type: {{last_obj.type}}</p>
+                                        <button type="button" class="btn btn-outline-primary" data-toggle="tooltip">Time: {{last_obj.time}}</button>
+                                        <button type="button" class="btn btn-outline-success" data-toggle="tooltip">Stock Name: {{last_obj.stock_name}}</button> 
+                                        <button type="button" class="btn btn-outline-info" data-toggle="tooltip">Stock symbol: {{last_obj.symbol}} </button> 
+                                        <button type="button" class="btn btn-outline-danger" data-toggle="tooltip">order side: {% if last_obj.side == '1' %} BUY {% else %} SELL {% endif %}</button>
+                                        <button type="button" class="btn btn-outline-danger" data-toggle="tooltip">Stock qty: {{last_obj.qty}} </button> 
+                                        <button type="button" class="btn btn-outline-danger" data-toggle="tooltip">Limit Price: ₹ {{last_obj.limitPrice}} </button> 
+                                        <button type="button" class="btn btn-outline-warning" data-toggle="tooltip">order type:   {% if last_obj.type == '1' %} Limit Order {% elif last_obj.type == '2' %} Market Order {% endif %} </button>
 
                                     </div>
                                 </div>
