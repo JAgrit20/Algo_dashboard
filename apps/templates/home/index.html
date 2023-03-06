@@ -199,7 +199,7 @@
                    <h6 class="text-muted">₹ {{i.limitPrice}}</h6>
                </td>
 
-               <td><a href="#!"
+               <td><a href="#!" onclick="alert('comming soon')"
                        class="label theme-bg2 text-white f-12">Cancel Trade</a>
                </td>
            </tr>
@@ -263,11 +263,11 @@
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                                                aria-controls="home" aria-selected="true">Positional</a>
+                                                aria-controls="home" aria-selected="true">Futures</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link active show" id="profile-tab" data-toggle="tab"
-                                                href="#profile" role="tab" aria-controls="profile" aria-selected="false">Futures</a>
+                                                href="#profile" role="tab" aria-controls="profile" aria-selected="false"> Positional</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact"
@@ -280,9 +280,14 @@
                                                 <thead>
                                                 <tr>
                                                     <th>Stock Name</th>
+                                                    <th>Stock symbol</th>
+                                                    <th>Stock qty</th>
+                                                    <th>Stock side</th>
+                                                    <th>Trade type</th>
+                                                    <th>Stock Price</th>
+                                                    <th>Trade stopPrice</th>
                                                     <th>Comment</th>
-                                                    <th>Time</th>
-                                                    <th>Status</th>
+
                                                     <th class="text-right"></th>
                                                 </tr>
                                                 </thead>
@@ -320,35 +325,57 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Stock Name</th>
+                                                        <th>Stock symbol</th>
+                                                        <th>Stock qty</th>
+                                                        <th>Stock side</th>
+                                                        <th>Trade type</th>
+                                                        <th>Stock Price</th>
+                                                        <th>Trade stopPrice</th>
+                                                        <th>Excuted or not </th>
                                                         <th>Comment</th>
-                                                        <th>Time</th>
-                                                        <th>Status</th>
                                                         <th class="text-right"></th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <h6 class="m-0">  <div class="navbar-brand header-logo">
-                                                                <a href="/" class="b-brand">
-                                                                    <div class="b-bg">
-                                                                        <i class="feather icon-check-circle"></i>
-                                                                    </div>
-                                                                </a>
-                                                            </div>Relience</h6>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="m-0">3 months option</h6>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="m-0">3:28 PM</h6>
-                                                        </td>
-                                                        <td>
-                                                            <h6 class="m-0 text-c-green">Done</h6>
-                                                        </td>
-                                                        <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                                                        </td>
-                                                    </tr>
+                                                        {% for data in all_posti_stocks_all %}
+                                                        
+                                                        <tr>
+                                                            <td>
+                                                                <h6 class="m-0">  <div class="navbar-brand header-logo">
+                                                                    <a href="/" class="b-brand">
+                                                                        <div class="b-bg">
+                                                                            <i class="feather icon-check-circle"></i>
+                                                                        </div>
+                                                                    </a>
+                                                                </div>{{data.stock_name}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0">{{data.symbol}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0">{{data.qty}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0">  {% if data.side == '1' %} BUY {% else %} SELL {% endif %}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0">  {% if data.type == '1' %} Limit Order {% elif data.type == '2' %} Market Order {% endif %}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0"> {{data.limitPrice}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0"> {{data.stopPrice}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0 text-c-red">No</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="m-0 text-c-red">{{data.comments}}</h6>
+                                                            </td>
+
+                                                        </tr>
+                                                        {% endfor %}
     
                                                     </tbody>
                                             </table>
