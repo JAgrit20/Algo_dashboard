@@ -164,7 +164,7 @@
                                                     <tbody>
                                                         <th>symbol</th>
                                                         <th>Stock name</th>
-                                                        <th>Excuted or not & Buy / Sell </th>
+                                                        <th>Executed or not & Buy / Sell </th>
                                                         <th>Date time added</th>
                                                         <th>limit Price</th>
                                                         <th>Action</th>
@@ -185,8 +185,9 @@
                </td>
 
                <td> <h6 class="mb-1"> 
-                   <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
                    
+                   
+                   {% if i.trade_executed  %} <i class="fas fa-circle text-c-green f-10 m-r-15"></i> {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i> {% endif %}
                    {% if i.side == '1' %} BUY {% else %} SELL {% endif %}
 
                </h6>
@@ -331,7 +332,7 @@
                                                         <th>Trade type</th>
                                                         <th>Stock Price</th>
                                                         <th>Trade stopPrice</th>
-                                                        <th>Excuted or not </th>
+                                                        <th>Executed or not </th>
                                                         <th>Comment</th>
                                                         <th class="text-right"></th>
                                                     </tr>
@@ -362,16 +363,17 @@
                                                                 <h6 class="m-0">  {% if data.type == '1' %} Limit Order {% elif data.type == '2' %} Market Order {% endif %}</h6>
                                                             </td>
                                                             <td>
-                                                                <h6 class="m-0"> {{data.limitPrice}}</h6>
+                                                                <h6 class="m-0">₹ {{data.limitPrice}}</h6>
                                                             </td>
                                                             <td>
                                                                 <h6 class="m-0"> {{data.stopPrice}}</h6>
                                                             </td>
                                                             <td>
-                                                                <h6 class="m-0 text-c-red">No</h6>
+                                                                {% if data.trade_executed %}   <h6 class="m-0 text-c-green">   Done </h6> {% else %} <h6 class="m-0 text-c-red">  No </h6>  {% endif %}
                                                             </td>
+                                                           
                                                             <td>
-                                                                <h6 class="m-0 text-c-red">{{data.comments}}</h6>
+                                                                <h6 class="m-0 text-c-green">{{data.comments}}</h6>
                                                             </td>
 
                                                         </tr>

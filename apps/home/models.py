@@ -69,6 +69,7 @@ class Positional_data(models.Model):
     side = models.CharField(max_length=100)
     comments = models.TextField(blank=True)
     productType = models.CharField(max_length=100)
+    trade_executed = models.BooleanField(null=True, blank=True,default=False)
     limitPrice = models.BigIntegerField(default=0,null=True, blank=True)
     stopPrice = models.BigIntegerField(default=0,null=True, blank=True)
     validity = models.CharField(max_length=100,null=True, blank=True,default="DAY")
