@@ -11,7 +11,7 @@ def start():
 	# scheduler.add_job(clean_daily_db, 'interval', minutes=1)
 	
 	scheduler.add_job(update_token, 'interval',  minutes=300)
-	scheduler.add_job(strategy_5, 'interval',  minutes=1)
+	scheduler.add_job(strategy_5, 'interval',  minutes=15)
 	# scheduler.add_job(Place_positional_order, 'interval',  seconds=3)
 	
 	# scheduler.add_job(Telegram_data, 'interval', minutes=1)
