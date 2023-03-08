@@ -145,12 +145,12 @@ print(all_user_data['data']['email_id'])
 print(all_user_data['data']['mobile_number'])
 
 data = {
-    "symbol":"NSE:SBIN-EQ",
+    "symbol":"NSE:NlFTY2330917000CE",
     "qty":1,
-    "type":1,
+    "type":2,
     "side":1,
     "productType":"INTRADAY",
-    "limitPrice":100,
+    "limitPrice":0,
     "stopPrice":0,
     "validity":"DAY",
     "disclosedQty":0,
@@ -161,3 +161,5 @@ data = {
 
 order_data = fyers.place_order(data)
 print(order_data)
+data={}
+# order_data = fyers.exit_positions(data)
