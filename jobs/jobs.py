@@ -135,7 +135,7 @@ def strategy_5():
     dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)  # replace method
     dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))  # astimezone method
     print("India time data_add", dtobj_india)
-    dtobj_india = dtobj_india.strftime("%H:%M:%S")
+    dtobj_india = dtobj_india.strftime("%m-%d %H:%M")
     dtobj_indiaa = str(dtobj_india)
     print("count", count)
     field_value_signal = 0
@@ -145,15 +145,15 @@ def strategy_5():
         field_value_signal = getattr(obj, field_name)
     except:
         pass
-    if(count > 40):
+    if(count >=40):
         
         prev_spot = field_value_signal
         spot = float(nifty_val)
+        spot = math.floor(spot)
         b = float(spot/100)
-        b = float(b)
-        c = math.floor(b)
-        d = float((c+0.5 )*100)
-        e = float((c-0.5 )*100)
+        # c = math.floor(b)
+        d = float((b+0.5 )*100)
+        e = float((b-0.5 )*100)
         d= int(d)
         e= int(e)
         Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= d,exit_price=0,Count=count,type_of_option="PUT",net_point_captured=prev_spot-spot)
@@ -189,11 +189,11 @@ def strategy_5():
     if(count <= 10):
         prev_spot = field_value_signal
         spot = float(nifty_val)
+        spot = math.floor(spot)
         b = float(spot/100)
         b = float(b)
-        c = math.floor(b)
-        d = float((c+0.5 )*100)
-        e = float((c-0.5 )*100)
+        d = float((b+0.5 )*100)
+        e = float((b-0.5 )*100)
         d= int(d)
         e= int(e)
         Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= e,exit_price=0,Count=count,type_of_option="CALL",net_point_captured=prev_spot-spot)
@@ -205,7 +205,7 @@ def strategy_5():
             print("access",access_token)
         fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
         data = {
-        "symbol":f"NSE:NlFTY23309{d}CE",
+        "symbol":f"NSE:NIFTY23309{d}CE",
         "qty":1,
         "type":2,
         "side":1,
@@ -218,7 +218,7 @@ def strategy_5():
         "stopLoss":0,
         "takeProfit":0
         }
-        print(f"NSE:NlFTY23309{d}CE")
+        print(f"NSE:NIFTY23309{d}CE")
 
         order_data = fyers.place_order(data)
         print(order_data)
@@ -470,7 +470,7 @@ def schedule_api():
         # tol_CE_vol = data['filtered']['CE']['totVol']
         nifty_val = 0
         nifty_val = data['filtered']['data'][0]['PE']['underlyingValue']
-        dtobj_india = dtobj_india.strftime("%H:%M:%S")
+        dtobj_india = dtobj_india.strftime("%Y-%m-%d %H:%M:%S")
         dtobj_indiaa = str(dtobj_india)
 
         diff = tol_CE_vol - tol_PE_vol
@@ -589,7 +589,7 @@ def getting_btc_data():
         print("India time data_add", dtobj_india)
 
         # print("Data2",data)
-        dtobj_india = dtobj_india.strftime("%H:%M:%S")
+        dtobj_india = dtobj_india.strftime("%Y-%m-%d %H:%M:%S")
 
         dtobj_indiaa = str(dtobj_india)
 

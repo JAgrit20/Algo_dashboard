@@ -145,8 +145,8 @@ print(all_user_data['data']['email_id'])
 print(all_user_data['data']['mobile_number'])
 
 data = {
-    "symbol":"NSE:NlFTY2330917000CE",
-    "qty":1,
+    "symbol":"NSE:NIFTY2331617000CE",
+    "qty":50,
     "type":2,
     "side":1,
     "productType":"INTRADAY",
