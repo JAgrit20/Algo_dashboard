@@ -145,7 +145,7 @@ print(all_user_data['data']['email_id'])
 print(all_user_data['data']['mobile_number'])
 
 data = {
-    "symbol":"NSE:NIFTY2331617000CE",
+    "symbol":"NSE:NIFTY2331617600PE",
     "qty":50,
     "type":2,
     "side":1,
@@ -161,5 +161,7 @@ data = {
 
 order_data = fyers.place_order(data)
 print(order_data)
+print("--------------------exit------------------")
 data={}
-# order_data = fyers.exit_positions(data)
+order_data = fyers.exit_positions(data)
+print(order_data)
