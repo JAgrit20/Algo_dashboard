@@ -262,7 +262,7 @@ def strategy_5():
     
     latest_non_none_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
     positi = latest_non_none_position.type_of_option 
-    
+
     dtobj1 = datetime.utcnow()
     dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)
     dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))
@@ -287,10 +287,13 @@ def strategy_5():
                 print("access",access_token)
 
             fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-            
-            
+                  
             data  = {}
             fyers.exit_positions(data)
+            
+            vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
+            vwap_data_exit.save()
+
     if(positi== "PUT"):
         latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_exit_2_green=None) | Q(TV_candle_exit_2_green='')).latest('date_time')
         if(latest_position.TV_candle_exit_2_green or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
@@ -304,6 +307,8 @@ def strategy_5():
             
             data  = {}
             fyers.exit_positions(data)
+            vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
+            vwap_data_exit.save()
 
 
 def send_login_otp(fy_id, app_id):
