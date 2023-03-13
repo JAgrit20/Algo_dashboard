@@ -57,20 +57,20 @@ def green_candle_conf(request):
 @api_view(['POST'])
 def red_candle_conf(request):
     last_obj = Vwap_Telegram_data.objects.last()
-    all_data = Vwap_Telegram_data.objects.all()
-    for data in all_data:
+    # all_data = Vwap_Telegram_data.objects.all()
+    # for data in all_data:
         
-        print("ID: ", data.id)
-        print("Time: ", data.time)
-        print("Nifty strike: ", data.Nifty_strike)
-        print("Entry price: ", data.entry_price)
-        print("Exit price: ", data.exit_price)
-        print("Count: ", data.Count)
-        print("Type of option: ", data.type_of_option)
-        print("Net point captured: ", data.net_point_captured)
-        print("-------------------------------")
+    #     print("ID: ", data.id)
+    #     print("Time: ", data.time)
+    #     print("Nifty strike: ", data.Nifty_strike)
+    #     print("Entry price: ", data.entry_price)
+    #     print("Exit price: ", data.exit_price)
+    #     print("Count: ", data.Count)
+    #     print("Type of option: ", data.type_of_option)
+    #     print("Net point captured: ", data.net_point_captured)
+    #     print("-------------------------------")
     
-    idd= 118
+    idd= last_obj.id
 
     try:
         if(request.data['title']=="BUY"):
