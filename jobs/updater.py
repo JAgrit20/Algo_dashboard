@@ -8,12 +8,12 @@ def start():
 	scheduler = BackgroundScheduler()
 	scheduler.configure(timezone=utc)
 	scheduler.add_job(create_row_14min, 'interval',  minutes=14)
-	scheduler.add_job(show_count, 'interval',  minutes=5)
+	# scheduler.add_job(show_count, 'interval',  minutes=5)
 	# scheduler.add_job(schedule_api, 'interval', minutes=15)
 	# scheduler.add_job(clean_daily_db, 'interval', minutes=1)
 	
 	scheduler.add_job(update_token, 'interval',  minutes=297)
-	scheduler.add_job(strategy_5, 'interval',  minutes=15)
+	scheduler.add_job(strategy_5, 'interval',  minutes=5)
 	# scheduler.add_job(Place_positional_order, 'interval',  seconds=3)
 	
 	# scheduler.add_job(Telegram_data, 'interval', minutes=1)
