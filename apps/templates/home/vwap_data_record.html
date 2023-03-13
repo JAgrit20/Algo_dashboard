@@ -94,6 +94,12 @@
                                                         <th>exit_price</th>
                                                         <th>type_of_option</th>
                                                         <th>net_point_captured</th>
+                                                        <th>TV_candle_conf_red</th>
+                                                        <th>TV_candle_conf_green</th>
+                                                        <th>TV_candle_exit_2_red</th>
+                                                        <th>TV_candle_exit_2_green</th>
+                                                        <th>TV_exit_70_25_rsi</th>
+                                                        <th>TV_exit_rsi_cross_down</th>
                                                   
                                                         <th class="text-right"></th>
                                                     </tr>
@@ -129,6 +135,49 @@
                                                             
                                                             <td>
                                                                 <h6 class="m-0">{{data.net_point_captured}}</h6>
+                                                            </td>
+                                                           
+                                                             <td>
+                                                                 <!-- <h6 class="m-0">{{data.TV_candle_conf_red}}</h6> -->
+                                                                 {% if data.TV_candle_conf_red %} 
+                                                            <i class="fas fa-circle text-c-green f-10 m-r-15"></i> 
+                                                            {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                             {% endif %}
+                                                                </td>
+                                                               
+                                                               
+                                                              
+                                                               
+                                                            <td>
+                                                                {% if data.TV_candle_conf_green  %} 
+                                                                <i class="fas fa-circle text-c-green f-10 m-r-15"></i> 
+                                                                {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                                 {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {% if data.TV_candle_exit_2_red  %} 
+                                                                <i class="fas fa-circle text-c-green f-10 m-r-15"></i> 
+                                                                {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                                 {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {% if data.TV_candle_exit_2_green  %} 
+                                                                <i class="fas fa-circle text-c-green f-10 m-r-15"></i> 
+                                                                {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                                 {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {% if data.TV_exit_70_25_rsi  %} 
+                                                                <i class="fas fa-circle text-c-green f-10 m-r-15"></i> 
+                                                                {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                                 {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <!-- <h6 class="m-0">{{data.TV_exit_rsi_cross_down}}</h6> -->
+                                                                {% if data.TV_exit_rsi_cross_down  %} 
+                                                                <i class="fas fa-circle text-c-green f-10 m-r-15"></i> 
+                                                                {% else %} <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                                 {% endif %}
                                                             </td>
                                                             
 

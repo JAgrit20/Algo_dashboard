@@ -92,12 +92,18 @@ class Nifty_Data(models.Model):
 class Vwap_Telegram_data(models.Model):
 
     date_time = models.DateTimeField(auto_now_add=True, blank=True)
-    time = models.CharField(max_length=10)
-    Count = models.BigIntegerField()
-    Nifty_strike = models.FloatField()
-    entry_price = models.FloatField()
-    exit_price = models.FloatField()
-    type_of_option =models.CharField(max_length=10)
-    net_point_captured = models.FloatField()
+    time = models.CharField(max_length=20)
+    Count = models.BigIntegerField(null=True, blank=True)
+    Nifty_strike = models.FloatField(null=True, blank=True)
+    entry_price = models.FloatField(null=True, blank=True)
+    exit_price = models.FloatField(null=True, blank=True)
+    TV_candle_conf_red = models.BooleanField(null=True, blank=True)
+    TV_candle_conf_green = models.BooleanField(null=True, blank=True)
+    TV_candle_exit_2_red = models.BooleanField(null=True, blank=True)
+    TV_candle_exit_2_green = models.BooleanField(null=True, blank=True)
+    TV_exit_70_25_rsi = models.BooleanField(null=True, blank=True)
+    TV_exit_rsi_cross_down = models.BooleanField(null=True, blank=True)
+    type_of_option =models.CharField(max_length=10,null=True, blank=True)
+    net_point_captured = models.FloatField(null=True, blank=True)
 
 

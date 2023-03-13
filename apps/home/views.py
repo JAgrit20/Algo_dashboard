@@ -12,6 +12,21 @@ import jwt, datetime
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 import pytz
+from django.shortcuts import render
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+import datetime as dt
+import datetime
+import pytz
+import schedule
+import time
+import math
+import json
+import requests
+import pandas as pd
+from fyers_api import fyersModel
+import json
 
 
 from django import template
@@ -178,8 +193,8 @@ def vwap_data(request):
     html_template = loader.get_template('home/vwap_data_record.html')
     return HttpResponse(html_template.render(context, request))
 
-@login_required(login_url="/login/")
-def pages(request):
+# @login_required(login_url="/login/")
+# def pages(request):
     context = {}
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
@@ -220,4 +235,3 @@ def Get_portfolio(request):
 
     client_data.save()
     return Response(serializer.data)
-

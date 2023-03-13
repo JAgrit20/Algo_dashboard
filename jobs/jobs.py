@@ -29,6 +29,7 @@ from urllib.parse import parse_qs,urlparse
 import sys
 from fyers_api import fyersModel
 from fyers_api import accessToken
+from django.db.models import Q
 
 
 # In[ ]:
@@ -59,6 +60,18 @@ URL_TOKEN = BASE_URL_2 + "/token"
 URL_VALIDATE_AUTH_CODE = BASE_URL_2 + "/validate-authcode"
 SUCCESS = 1
 ERROR = -1
+
+def create_row_14min():
+    print("create_row_14min() called")
+    dtobj1 = datetime.datetime.utcnow()  # utcnow class method
+    dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)  # replace method
+    dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))  # astimezone method
+    print("India time data_add", dtobj_india)
+    dtobj_india = dtobj_india.strftime("%m-%d %H:%M:%S")
+    dtobj_indiaa = str(dtobj_india)
+    
+    row_data_entry = Vwap_Telegram_data(time=dtobj_indiaa)
+    row_data_entry.save()
 
 def strategy_5():
 
@@ -147,81 +160,150 @@ def strategy_5():
         pass
     if(count >=40):
         
-        prev_spot = field_value_signal
+        prev_spot = 0
         spot = float(nifty_val)
         spot = math.floor(spot)
-        b = float(spot/100)
-        # c = math.floor(b)
-        d = float((b+0.5 )*100)
-        e = float((b-0.5 )*100)
-        d= int(d)
-        e= int(e)
-        Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= d,exit_price=0,Count=count,type_of_option="PUT",net_point_captured=prev_spot-spot)
+        b = float(spot / 100)
+
+        d = float((b + 0.5) * 100)  # 50 points above spot
+        e = float((b - 0.5) * 100)  # 50 points below spot
+
+        d = int(d)
+        e = int(e)
+        obj.time = dtobj_indiaa
+        obj.Nifty_strike = nifty_val
+        obj.entry_price = d
+        obj.exit_price = 0
+        obj.Count = count
+        obj.type_of_option = "PUT"
+        obj.net_point_captured=prev_spot-spot 
+        obj.save()
+        # Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= d,exit_price=0,Count=count,type_of_option="PUT",net_point_captured=prev_spot-spot)
         # Send_high()
-        Telegram_data_entry.save()
-        access_token=""
-        with open("store_token.txt","r") as outfile:
-            access_token= outfile.read()
+        # Telegram_data_entry.save()
+        obj2 = Vwap_Telegram_data.objects.last()
+        if(obj2.TV_candle_conf_red):
+            access_token=""
+            with open("store_token.txt","r") as outfile:
+                access_token= outfile.read()
 
-            print("access",access_token)
-            
-        fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-        data = {
-        "symbol":f"NSE:NIFTY23309{e}PE",
-        "qty":50,
-        "type":2,
-        "side":1,
-        "productType":"INTRADAY",
-        "limitPrice":0,
-        "stopPrice":0,
-        "validity":"DAY",
-        "disclosedQty":0,
-        "offlineOrder":"False",
-        "stopLoss":0,
-        "takeProfit":0
-        }
-        print(f"NSE:NlFTY23309{d}PE")
+                print("access",access_token)
+                
+            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+            data = {
+            "symbol":f"NSE:NIFTY23316{d}PE",
+            "qty":50,
+            "type":2,
+            "side":1,
+            "productType":"INTRADAY",
+            "limitPrice":0,
+            "stopPrice":0,
+            "validity":"DAY",
+            "disclosedQty":0,
+            "offlineOrder":"False",
+            "stopLoss":0,
+            "takeProfit":0
+            }
+            print(f"NSE:NIFTY23316{d}PE")
 
-        order_data = fyers.place_order(data)
-        print(order_data)
+            order_data = fyers.place_order(data)
+            print(order_data)
      
 
     if(count <= 10):
-        prev_spot = field_value_signal
+        prev_spot = 0
         spot = float(nifty_val)
         spot = math.floor(spot)
-        b = float(spot/100)
-        b = float(b)
-        d = float((b+0.5 )*100)
-        e = float((b-0.5 )*100)
-        d= int(d)
-        e= int(e)
-        Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= e,exit_price=0,Count=count,type_of_option="CALL",net_point_captured=prev_spot-spot)
-        # Send_low()
-        Telegram_data_entry.save()
-        access_token=""
-        with open("store_token.txt","r") as outfile:
-            access_token= outfile.read()
-            print("access",access_token)
-        fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-        data = {
-        "symbol":f"NSE:NIFTY23309{d}CE",
-        "qty":1,
-        "type":2,
-        "side":1,
-        "productType":"INTRADAY",
-        "limitPrice":0,
-        "stopPrice":0,
-        "validity":"DAY",
-        "disclosedQty":0,
-        "offlineOrder":"False",
-        "stopLoss":0,
-        "takeProfit":0
-        }
-        print(f"NSE:NIFTY23309{d}CE")
+        b = float(spot / 100)
 
-        order_data = fyers.place_order(data)
-        print(order_data)
+        d = float((b + 0.5) * 100)  # 50 points above spot
+        e = float((b - 0.5) * 100)  # 50 points below spot
+
+        d = int(d)
+        e = int(e)
+
+        obj.time = dtobj_indiaa
+        obj.Nifty_strike = nifty_val
+        obj.entry_price = e
+        obj.exit_price = 0
+        obj.Count = count
+        obj.type_of_option = "CALL"
+        obj.net_point_captured=prev_spot-spot 
+        obj.save()
+        # Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= e,exit_price=0,Count=count,type_of_option="CALL",net_point_captured=prev_spot-spot)
+        # Send_low()
+        # Telegram_data_entry.save()
+        obj2 = Vwap_Telegram_data.objects.last()
+        if(obj2.TV_candle_conf_green):
+            access_token=""
+            with open("store_token.txt","r") as outfile:
+                access_token= outfile.read()
+                print("access",access_token)
+
+            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+            data = {
+            "symbol":f"NSE:NIFTY23316{e}CE",
+            "qty":50,
+            "type":2,
+            "side":1,
+            "productType":"INTRADAY",
+            "limitPrice":0,
+            "stopPrice":0,
+            "validity":"DAY",
+            "disclosedQty":0,
+            "offlineOrder":"False",
+            "stopLoss":0,
+            "takeProfit":0
+            }
+            print(f"NSE:NIFTY23316{e}CE")
+
+            order_data = fyers.place_order(data)
+            print(order_data)
+    
+    latest_non_none_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
+    positi = latest_non_none_position.type_of_option 
+    
+    dtobj1 = datetime.utcnow()
+    dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)
+    dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))
+    print("India time data_add", dtobj_india)
+    dtobj_india = dtobj_india.replace(second=0, microsecond=0)  # remove seconds and microseconds
+    dtobj_indiaa = dtobj_india.strftime("%m-%d %H:%M")
+
+    # Convert dtobj_indiaa to a datetime object
+    dt = datetime.strptime(dtobj_indiaa, "%m-%d %H:%M")
+
+    # Check if the time is after 3:18 PM
+    times_up = False
+    if dt.time() > time(15, 18):
+        times_up= True
+
+    if(positi== "CALL"):
+        latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_conf_red=None) | Q(TV_candle_conf_red='')).latest('date_time')
+        if(latest_position.TV_candle_exit_2_red or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
+            access_token=""
+            with open("store_token.txt","r") as outfile:
+                access_token= outfile.read()
+                print("access",access_token)
+
+            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+            
+            
+            data  = {}
+            fyers.exit_positions(data)
+    if(positi== "PUT"):
+        latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_exit_2_green=None) | Q(TV_candle_exit_2_green='')).latest('date_time')
+        if(latest_position.TV_candle_exit_2_green or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
+            access_token=""
+            with open("store_token.txt","r") as outfile:
+                access_token= outfile.read()
+                print("access",access_token)
+
+            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+            
+            
+            data  = {}
+            fyers.exit_positions(data)
 
 
 def send_login_otp(fy_id, app_id):
@@ -384,8 +466,6 @@ def Send_high():
     print(response.text)
 
 
-# In[5]:
-# Send_high()
 
 def Send_low():
     import requests
@@ -626,3 +706,5 @@ def getting_btc_data():
         print("something went wrong", e) 
 
         # 77779
+
+# %%
