@@ -10,7 +10,7 @@ urlpatterns = [
     path('save_positional_stock',views.save_positional_stock,name='save_positional_stock'),
     path('add-stock',views.addstock,name='add-stock'),
     path('vwap_data',views.vwap_data,name='vwap_data'),
-    path('vwap_data2',views.dxy,name='dxy'),
-    re_path(r'^.*\.*', views.pages, name='pages'),
+    path('dxy',views.dxy,name='dxy'),
+    # re_path(r'^.*\.*', views.pages, name='pages'),
 
 ]

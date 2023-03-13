@@ -200,8 +200,8 @@ def dxy(request):
     html_template = loader.get_template('home/DXY_data_record.html')
     return HttpResponse(html_template.render(context, request))
 
-@login_required(login_url="/login/")
-def pages(request):
+# @login_required(login_url="/login/")
+# def pages(request):
     context = {}
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
