@@ -192,6 +192,14 @@ def vwap_data(request):
     context = {"last_obj":latest_post_data}
     html_template = loader.get_template('home/vwap_data_record.html')
     return HttpResponse(html_template.render(context, request))
+
+def check_dxy_rsi_60(request):
+
+    obj = DXY_RSI_60.objects.last()
+    ans = 2
+    if(obj.title == True):
+        ans = 0
+    return HttpResponse(json.dumps({'decision':ans,'time':obj.time}))
 @csrf_exempt
 def dxy(request):
     latest_post_data = DXY_RSI_60.objects.order_by('-pk')
