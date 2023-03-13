@@ -35,4 +35,5 @@ urlpatterns = [
 	path('consicutive_red_candle/', views.consicutive_red_candle, name="red_candle_conf"),
     path('TV_exit_70_25_rsi/', views.TV_exit_70_25_rsi, name="green_candle_conf"),
 	path('TV_exit_rsi_cross_down/', views.TV_exit_rsi_cross_down, name="red_candle_conf"),
+    path('DXY_Sell_RSI_60/', views.DXY_Sell_RSI_60, name="DXY_Sell_RSI_60"),
 ]

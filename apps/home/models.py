@@ -105,5 +105,10 @@ class Vwap_Telegram_data(models.Model):
     TV_exit_rsi_cross_down = models.BooleanField(null=True, blank=True)
     type_of_option =models.CharField(max_length=10,null=True, blank=True)
     net_point_captured = models.FloatField(null=True, blank=True)
+class DXY_RSI_60(models.Model):
+
+    date_time = models.DateTimeField(auto_now_add=True, blank=True)
+    time = models.CharField(max_length=20)
+    title = models.BooleanField(null=True, blank=True)
 
 
