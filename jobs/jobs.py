@@ -259,56 +259,58 @@ def strategy_5():
 
             order_data = fyers.place_order(data)
             print(order_data)
-    
-    latest_non_none_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
-    positi = latest_non_none_position.type_of_option 
+    try:
+        latest_non_none_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
+        positi = latest_non_none_position.type_of_option 
 
-    dtobj1 = datetime.utcnow()
-    dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)
-    dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))
-    print("India time data_add", dtobj_india)
-    dtobj_india = dtobj_india.replace(second=0, microsecond=0)  # remove seconds and microseconds
-    dtobj_indiaa = dtobj_india.strftime("%m-%d %H:%M")
+        dtobj1 = datetime.utcnow()
+        dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)
+        dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))
+        print("India time data_add", dtobj_india)
+        dtobj_india = dtobj_india.replace(second=0, microsecond=0)  # remove seconds and microseconds
+        dtobj_indiaa = dtobj_india.strftime("%m-%d %H:%M")
 
-    # Convert dtobj_indiaa to a datetime object
-    dt = datetime.strptime(dtobj_indiaa, "%m-%d %H:%M")
+        # Convert dtobj_indiaa to a datetime object
+        dt = datetime.strptime(dtobj_indiaa, "%m-%d %H:%M")
 
-    # Check if the time is after 3:18 PM
-    times_up = False
-    if dt.time() > time(15, 18):
-        times_up= True
+        # Check if the time is after 3:18 PM
+        times_up = False
+        if dt.time() > time(15, 18):
+            times_up= True
 
-    if(positi== "CALL"):
-        latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_conf_red=None) | Q(TV_candle_conf_red='')).latest('date_time')
-        if(latest_position.TV_candle_exit_2_red or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
-            access_token=""
-            with open("store_token.txt","r") as outfile:
-                access_token= outfile.read()
-                print("access",access_token)
+        if(positi== "CALL"):
+            latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_conf_red=None) | Q(TV_candle_conf_red='')).latest('date_time')
+            if(latest_position.TV_candle_exit_2_red or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
+                access_token=""
+                with open("store_token.txt","r") as outfile:
+                    access_token= outfile.read()
+                    print("access",access_token)
 
-            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-                  
-            data  = {}
-            fyers.exit_positions(data)
-            
-            vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
-            vwap_data_exit.save()
+                fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+                    
+                data  = {}
+                fyers.exit_positions(data)
+                
+                vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
+                vwap_data_exit.save()
 
-    if(positi== "PUT"):
-        latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_exit_2_green=None) | Q(TV_candle_exit_2_green='')).latest('date_time')
-        if(latest_position.TV_candle_exit_2_green or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
-            access_token=""
-            with open("store_token.txt","r") as outfile:
-                access_token= outfile.read()
-                print("access",access_token)
+        if(positi== "PUT"):
+            latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_exit_2_green=None) | Q(TV_candle_exit_2_green='')).latest('date_time')
+            if(latest_position.TV_candle_exit_2_green or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
+                access_token=""
+                with open("store_token.txt","r") as outfile:
+                    access_token= outfile.read()
+                    print("access",access_token)
 
-            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-            
-            
-            data  = {}
-            fyers.exit_positions(data)
-            vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
-            vwap_data_exit.save()
+                fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+                
+                
+                data  = {}
+                fyers.exit_positions(data)
+                vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
+                vwap_data_exit.save()
+    except Exception as e:
+        print("Line 313 ",e)
 
 
 def send_login_otp(fy_id, app_id):
