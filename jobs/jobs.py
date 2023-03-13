@@ -351,15 +351,15 @@ def strategy_5():
         dtobj_indiaa = dtobj_india.strftime("%m-%d %H:%M")
 
         # Convert dtobj_indiaa to a datetime object
-        dt = datetime.strptime(dtobj_indiaa, "%m-%d %H:%M")
+        dt = dtobj_india.strptime(dtobj_indiaa, "%m-%d %H:%M")
 
         # Check if the time is after 3:18 PM
         times_up = False
-        if dt.time() > time(15, 18):
-            times_up= True
+        # if dt.time() > time(15, 18):
+        #     times_up= True
 
         if(positi== "CALL"):
-            latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_conf_red=None) | Q(TV_candle_conf_red='')).latest('date_time')
+            latest_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
             if(latest_position.TV_candle_exit_2_red or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
                 access_token=""
                 with open("store_token.txt","r") as outfile:
@@ -375,7 +375,7 @@ def strategy_5():
                 vwap_data_exit.save()
 
         if(positi== "PUT"):
-            latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_exit_2_green=None) | Q(TV_candle_exit_2_green='')).latest('date_time')
+            latest_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
             if(latest_position.TV_candle_exit_2_green or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
                 access_token=""
                 with open("store_token.txt","r") as outfile:
