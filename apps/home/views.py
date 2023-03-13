@@ -193,7 +193,7 @@ def vwap_data(request):
     html_template = loader.get_template('home/vwap_data_record.html')
     return HttpResponse(html_template.render(context, request))
 @csrf_exempt
-def DXY(request):
+def dxy(request):
     latest_post_data = DXY_RSI_60.objects.order_by('-pk')
 
     context = {"last_obj":latest_post_data}
