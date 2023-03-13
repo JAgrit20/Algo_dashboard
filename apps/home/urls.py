@@ -1,7 +1,3 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
 
 from django.urls import path, re_path
 from apps.home import views
@@ -14,14 +10,8 @@ urlpatterns = [
     path('save_positional_stock',views.save_positional_stock,name='save_positional_stock'),
     path('add-stock',views.addstock,name='add-stock'),
     path('vwap_data',views.vwap_data,name='vwap_data'),
-    # path('vwap_data',views.vwap_data,name='vwap_data'),
-
- 
-	# path('task-create_stocastic_up/', views.taskCreate_data_stocastic_up, name="task-create_stocastic_up"),
-	# path('task-create_stocastic_ADX/', views.taskCreate_data_stocastic_ADX, name="task-create_stocastic_ADX"),
-
-
-    # Matches any html file
+    path('dxy',views.dxy,name='dxy'),
+    path('check_dxy_rsi_60', views.check_dxy_rsi_60, name='check_dxy_rsi_60'),
     # re_path(r'^.*\.*', views.pages, name='pages'),
 
 ]

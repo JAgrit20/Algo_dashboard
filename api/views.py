@@ -1,7 +1,7 @@
 
 from django.shortcuts import render
 from django.http import JsonResponse
-from apps.home.models import Vwap_Telegram_data 
+from apps.home.models import Vwap_Telegram_data,DXY_RSI_60
 # from counter.models import Counter, PCR_data, PCR_data_past,BTC_Data,Nifty_Data,Stocastic_Data,Stocastic_Data_DXY
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -151,6 +151,26 @@ def TV_exit_rsi_cross_down(request):
 
 
 
+    
+@api_view(['POST'])
+def DXY_Sell_RSI_60(request):
+    dtobj1 = datetime.datetime.utcnow()
+    dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)
+    dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))
+    print("India time data_add", dtobj_india)
+    dtobj_india = dtobj_india.replace(second=0, microsecond=0)  # remove seconds and microseconds
+    dtobj_indiaa = dtobj_india.strftime("%m-%d %H:%M:%S")
+    try:
+        if(request.data['title']=="BUY"):
+            DXY_RSI_60_exit = DXY_RSI_60(time=dtobj_indiaa,title = True)
+            DXY_RSI_60_exit.save()
+            print("Updated title success create")
+            return HttpResponse(f"Updated title ")
+        else:
+            return HttpResponse(f"Wrong")
+
+    except:
+        return HttpResponse("Something went wrong")
 
 @api_view(['GET'])
 def taskList(request):
