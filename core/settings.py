@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',      # OAuth new  
     "sslserver",
     "api",
-    "rest_framework"
+    "rest_framework",
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -98,7 +101,11 @@ DATABASES = {
         'PORT': '25060',
     }
 }
-
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://olymptrade.com/',
+    'https://olymptrade.com',
+]
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
