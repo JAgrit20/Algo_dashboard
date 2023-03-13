@@ -15,6 +15,7 @@ urlpatterns = [
     path('add-stock',views.addstock,name='add-stock'),
     path('vwap_data',views.vwap_data,name='vwap_data'),
     path('DXY',views.DXY,name='DXY'),
+    
     # path('vwap_data',views.vwap_data,name='vwap_data'),
 
  
