@@ -196,8 +196,10 @@ def check_exit():
         dtobj_indiaa = get_time()
 
         if(positi== "CALL"):
-            latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_conf_red=None) | Q(TV_candle_conf_red='')).latest('date_time')
+            print("Last position is call")
+            latest_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
             if(latest_position.TV_candle_exit_2_red or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
+                print("Inside Exit Call condition")
                 access_token=""
                 with open("store_token.txt","r") as outfile:
                     access_token= outfile.read()
@@ -206,14 +208,18 @@ def check_exit():
                 fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
                     
                 data  = {}
-                fyers.exit_positions(data)
+                ans = fyers.exit_positions(data)
+                print("exit call fyers",ans)
                 
-                vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
+                vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="EXIT CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
                 vwap_data_exit.save()
 
         if(positi== "PUT"):
-            latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_exit_2_green=None) | Q(TV_candle_exit_2_green='')).latest('date_time')
+            print("PUT inside")
+            latest_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
             if(latest_position.TV_candle_exit_2_green or latest_position.TV_exit_70_25_rsi or latest_position.TV_exit_rsi_cross_down or times_up ):
+                print("Last position is PUT")
+                
                 access_token=""
                 with open("store_token.txt","r") as outfile:
                     access_token= outfile.read()
@@ -223,8 +229,9 @@ def check_exit():
                 
                 
                 data  = {}
-                fyers.exit_positions(data)
-                vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
+                ans = fyers.exit_positions(data)
+                print("exit call fyers",ans)
+                vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="EXIT PUT",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
                 vwap_data_exit.save()
 
     except Exception as e:
@@ -234,14 +241,31 @@ def check_exit():
             print(exc_type, fname, exc_tb.tb_lineno)
             print("something went wrong", e) 
 
-def Place_order(strike):
+def Place_order(nifty_val,strike,symbol):
+    access_token=""
     with open("store_token.txt","r") as outfile:
                 access_token= outfile.read()
                 print("access",access_token)
                 
     fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+
+    high_price=0
+    low_price=0
+    nifty_spot=0
+
+    try:
+        data = {"symbols":"NSE:NIFTY50-INDEX"}
+        nifty_spot = fyers.quotes(data)
+        ans = (nifty_spot)
+        high_price = ans['d'][0]['v']['high_price']
+        low_price = ans['d'][0]['v']['low_price']
+    except:
+        high_price = float(nifty_val) + 10
+        low_price = float(nifty_val) - 10
+        pass
+    print("Nifty SPOT------------------------------------------------",nifty_spot)
     data = {
-    "symbol":f"NSE:NIFTY23316{strike}PE",
+    "symbol":symbol,
     "qty":50,
     "type":2,
     "side":1,
@@ -251,12 +275,13 @@ def Place_order(strike):
     "validity":"DAY",
     "disclosedQty":0,
     "offlineOrder":"False",
-    "stopLoss":0,
+    "stopLoss":float(high_price)+5,
     "takeProfit":0
     }
 
     order_data = fyers.place_order(data)
     print(order_data)
+
 def strategy_5():
 
     print("Running VWAP")
@@ -292,7 +317,8 @@ def strategy_5():
 
     if(count <= 10):
 
-        update_value_in_DB(nifty_val,count,call_strike,"CALL")
+        update_value_in_DB(nifty_val,count,call_strike,"CALL",)
+        symbol ="NSE:NIFTY23316{call_strike}CE"
         obj2 = Vwap_Telegram_data.objects.last()
 
     # ---------------confirmation candle check -------------------
