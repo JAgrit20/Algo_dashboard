@@ -271,11 +271,20 @@ def strategy_5():
                 print("access",access_token)
                 
             fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-            data = {"symbols":"NSE:NIFTY50-INDEX"}
-            nifty_spot = fyers.quotes(data)
-            ans = (nifty_spot)
-            high_price = ans['d'][0]['v']['high_price']
-            low_price = ans['d'][0]['v']['low_price']
+            high_price=0
+            low_price=0
+            nifty_spot=0
+
+            try:
+                data = {"symbols":"NSE:NIFTY50-INDEX"}
+                nifty_spot = fyers.quotes(data)
+                ans = (nifty_spot)
+                high_price = ans['d'][0]['v']['high_price']
+                low_price = ans['d'][0]['v']['low_price']
+            except:
+                high_price = float(nifty_val) + 10
+                low_price = float(nifty_val) - 10
+                pass
             print("Nifty SPOT------------------------------------------------",nifty_spot)
             data = {
             "symbol":f"NSE:NIFTY23316{d}PE",
@@ -334,11 +343,20 @@ def strategy_5():
                 print("access",access_token)
 
             fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-            data = {"symbols":"NSE:NIFTY50-INDEX"}
-            nifty_spot = fyers.quotes(data)
-            ans = (nifty_spot)
-            high_price = ans['d'][0]['v']['high_price']
-            low_price = ans['d'][0]['v']['low_price']
+            high_price=0
+            low_price=0
+            nifty_spot=0
+
+            try:
+                data = {"symbols":"NSE:NIFTY50-INDEX"}
+                nifty_spot = fyers.quotes(data)
+                ans = (nifty_spot)
+                high_price = ans['d'][0]['v']['high_price']
+                low_price = ans['d'][0]['v']['low_price']
+            except:
+                high_price = float(nifty_val) + 10
+                low_price = float(nifty_val) - 10
+                pass
             print("Nifty SPOT------------------------------------------------",nifty_spot)
             data = {
             "symbol":f"NSE:NIFTY23316{e}CE",
