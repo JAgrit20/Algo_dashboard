@@ -141,85 +141,19 @@ def show_count():
             except Exception as e:
                 print("ERROR : "+str(e))
     print("current count", count)
-def strategy_5():
+    resp = [nifty_val, count]
+    return resp
 
-    print("Running VWAP")
-
-    print("Telegram_data add")
-    dtobj1 = datetime.datetime.utcnow()  # utcnow class method
-    stockcode = ['ADANIENT', 'ADANIPORTS', 'APOLLOHOSP', 'ASIANPAINT', 'AXISBANK', 'BAJAJ-AUTO', 'BAJFINANCE', 'BAJAJFINSV', 'BPCL', 'BHARTIARTL', 'BRITANNIA', 'CIPLA', 'COALINDIA', 'DIVISLAB', 'DRREDDY', 'EICHERMOT', 'GRASIM', 'HCLTECH', 'HDFCBANK', 'HDFCLIFE', 'HEROMOTOCO', 'HINDALCO',
-                 'HINDUNILVR', 'HDFC', 'ICICIBANK', 'ITC', 'INDUSINDBK', 'INFY', 'JSWSTEEL', 'KOTAKBANK', 'LT', 'M%26M', 'MARUTI', 'NTPC', 'NESTLEIND', 'ONGC', 'POWERGRID', 'RELIANCE', 'SBILIFE', 'SBIN', 'SUNPHARMA', 'TCS', 'TATACONSUM', 'TATAMOTORS', 'TATASTEEL', 'TECHM', 'TITAN', 'UPL', 'ULTRACEMCO', 'WIPRO']
-    # print(stockcode)
-    url = 'https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY'
-
-    headers = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-        'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'en-US,en;q=0.9'
-    }
-    response = requests.get(url, headers=headers).content
-    data = json.loads(response)
-    count = 0
-    nifty_val = 0
-    nifty_val = data['filtered']['data'][0]['PE']['underlyingValue']
-    print("nifty_val", nifty_val)
-
-    for i in range(len(stockcode)):
-            try:
-                stock_url = 'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=' + \
-                    str(stockcode[i])
-                print(stock_url)
-                headers = {
-                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'}
-                response = requests.get(stock_url, headers=headers)
-                # response
-                soup = BeautifulSoup(response.text, 'html.parser')
-                data_array = soup.find(id='responseDiv').getText()
-
-                y = json.loads(data_array)
-
-                latest_price = (y['data'][-1]['lastPrice'])
-                latest_price = latest_price.replace(',', '')
-                print("latest", latest_price)
-                latest_price = float(latest_price)
-
-                # name = "SUNPHARMA"
-
-                url = f'https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol={stockcode[i]}&smeFlag=0&itpFlag=0'
-                headers = {
-                    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0'}
-
-                soup = BeautifulSoup(requests.get(
-                    url, headers=headers).content, 'html.parser')
-                data = json.loads(soup.select_one('#responseDiv').text)
-
-                # uncomment this to print all data:
-                # print(json.dumps(data, indent=4))
-                vwap = (data['data'][0]['averagePrice'])
-                vwap = vwap.replace(',', '')
-                vwap = float(vwap)
-                # print("v",type(vwap))
-                # print("latest_price",type(latest_price))
-                vwap = float(vwap)
-
-                print('vwap:', data['data'][0]['averagePrice'])
-
-                if(latest_price > vwap):
-                    count = count + 1
-                # print("yes big")
-                # else:
-                #   # print("small")
-            except Exception as e:
-                print("ERROR : "+str(e))
-    
+def get_time():
     dtobj1 = datetime.datetime.utcnow()  # utcnow class method
     dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)  # replace method
     dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))  # astimezone method
     print("India time data_add", dtobj_india)
     dtobj_india = dtobj_india.strftime("%m-%d %H:%M")
     dtobj_indiaa = str(dtobj_india)
-    print("count", count)
-    prev_spot = 0
+    return dtobj_indiaa
+
+def strike_calc(nifty_val):
     spot = float(nifty_val)
     spot = math.floor(spot)
     b = int(spot / 100)
@@ -231,132 +165,35 @@ def strategy_5():
     e = int(e)
     print("d",d)
     print("e",e)
-    field_value_signal = 0
-    # try:
-    field_name = 'Nifty_strike'
+
+    ans = [d,e]
+
+    return ans
+
+def update_value_in_DB(nifty_val,count,strike,type_of_opt):
     obj = Vwap_Telegram_data.objects.last()
-    field_value_signal = getattr(obj, field_name)
-    # except:
-    #     pass
-    if(count >=40):
-        
-        prev_spot = 0
-        spot = float(nifty_val)
-        spot = math.floor(spot)
-        b = int(spot / 100)
+    prev_spot = obj.Nifty_strike
 
-        d = float((b + 0.5) * 100)  # 50 points above spot
-        e = float((b - 0.5) * 100)  # 50 points below spot
+    dtobj_indiaa = get_time()
 
-        d = int(d)
-        e = int(e)
-        obj.time = dtobj_indiaa
-        obj.Nifty_strike = nifty_val
-        obj.entry_price = d
-        obj.exit_price = 0
-        obj.Count = count
-        obj.type_of_option = "PUT"
-        obj.net_point_captured=prev_spot-spot 
-        obj.save()
-        # Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= d,exit_price=0,Count=count,type_of_option="PUT",net_point_captured=prev_spot-spot)
-        # Send_high()
-        # Telegram_data_entry.save()
-        obj2 = Vwap_Telegram_data.objects.last()
-        if(obj2.TV_candle_conf_red):
-            access_token=""
-            with open("store_token.txt","r") as outfile:
-                access_token= outfile.read()
+    obj.time = dtobj_indiaa
+    obj.Nifty_strike = nifty_val
+    obj.entry_price =strike 
+    obj.exit_price = 0
+    obj.Count = count
+    obj.type_of_option = type_of_opt
+    obj.net_point_captured=abs(prev_spot-nifty_val) 
+    obj.save()
 
-                print("access",access_token)
-                
-            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-            data = {
-            "symbol":f"NSE:NIFTY23316{d}PE",
-            "qty":50,
-            "type":2,
-            "side":1,
-            "productType":"INTRADAY",
-            "limitPrice":0,
-            "stopPrice":0,
-            "validity":"DAY",
-            "disclosedQty":0,
-            "offlineOrder":"False",
-            "stopLoss":0,
-            "takeProfit":0
-            }
-            print(f"NSE:NIFTY23316{d}PE")
 
-            order_data = fyers.place_order(data)
-            print(order_data)
-     
-
-    if(count <= 10):
-        prev_spot = 0
-        spot = float(nifty_val)
-        spot = math.floor(spot)
-        b = int(spot / 100)
-
-        d = float((b + 0.5) * 100)  # 50 points above spot
-        e = float((b - 0.5) * 100)  # 50 points below spot
-
-        d = int(d)
-        e = int(e)
-
-        obj.time = dtobj_indiaa
-        obj.Nifty_strike = nifty_val
-        obj.entry_price = e
-        obj.exit_price = 0
-        obj.Count = count
-        obj.type_of_option = "CALL"
-        obj.net_point_captured=prev_spot-spot 
-        obj.save()
-        # Telegram_data_entry = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= e,exit_price=0,Count=count,type_of_option="CALL",net_point_captured=prev_spot-spot)
-        # Send_low()
-        # Telegram_data_entry.save()
-        obj2 = Vwap_Telegram_data.objects.last()
-        if(obj2.TV_candle_conf_green):
-            access_token=""
-            with open("store_token.txt","r") as outfile:
-                access_token= outfile.read()
-                print("access",access_token)
-
-            fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
-            data = {
-            "symbol":f"NSE:NIFTY23316{e}CE",
-            "qty":50,
-            "type":2,
-            "side":1,
-            "productType":"INTRADAY",
-            "limitPrice":0,
-            "stopPrice":0,
-            "validity":"DAY",
-            "disclosedQty":0,
-            "offlineOrder":"False",
-            "stopLoss":0,
-            "takeProfit":0
-            }
-            print(f"NSE:NIFTY23316{e}CE")
-
-            order_data = fyers.place_order(data)
-            print(order_data)
+def check_exit():
+    
     try:
+
         latest_non_none_position = Vwap_Telegram_data.objects.exclude(Q(type_of_option=None) | Q(type_of_option='')).latest('date_time')
         positi = latest_non_none_position.type_of_option 
 
-        dtobj1 = datetime.datetime.utcnow()
-        dtobj3 = dtobj1.replace(tzinfo=pytz.UTC)
-        dtobj_india = dtobj3.astimezone(pytz.timezone("Asia/Calcutta"))
-        print("India time data_add", dtobj_india)
-        dtobj_india = dtobj_india.replace(second=0, microsecond=0)  # remove seconds and microseconds
-        dtobj_indiaa = dtobj_india.strftime("%m-%d %H:%M")
-
-        # Convert dtobj_indiaa to a datetime object
-        dt = datetime.strptime(dtobj_indiaa, "%m-%d %H:%M")
-
-        # Check if the time is after 3:18 PM
-        times_up = False
-        if dt.time() > time(15, 18):
-            times_up= True
+        dtobj_indiaa = get_time()
 
         if(positi== "CALL"):
             latest_position = Vwap_Telegram_data.objects.exclude(Q(TV_candle_conf_red=None) | Q(TV_candle_conf_red='')).latest('date_time')
@@ -389,12 +226,84 @@ def strategy_5():
                 fyers.exit_positions(data)
                 vwap_data_exit = Vwap_Telegram_data(time=dtobj_indiaa,Nifty_strike=nifty_val,entry_price= 0,exit_price=nifty_val,Count=count,type_of_option="CALL",net_point_captured=0,TV_candle_exit_2_red=latest_position.TV_candle_exit_2_red,TV_exit_70_25_rsi=latest_position.TV_exit_70_25_rsi,TV_exit_rsi_cross_down=latest_position.TV_exit_rsi_cross_down)
                 vwap_data_exit.save()
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-        print("something went wrong", e) 
 
+    except Exception as e:
+            
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print("something went wrong", e) 
+
+def Place_order(strike):
+    with open("store_token.txt","r") as outfile:
+                access_token= outfile.read()
+                print("access",access_token)
+                
+    fyers = fyersModel.FyersModel(client_id=client_id, token= access_token)
+    data = {
+    "symbol":f"NSE:NIFTY23316{strike}PE",
+    "qty":50,
+    "type":2,
+    "side":1,
+    "productType":"INTRADAY",
+    "limitPrice":0,
+    "stopPrice":0,
+    "validity":"DAY",
+    "disclosedQty":0,
+    "offlineOrder":"False",
+    "stopLoss":0,
+    "takeProfit":0
+    }
+
+    order_data = fyers.place_order(data)
+    print(order_data)
+def strategy_5():
+
+    print("Running VWAP")
+
+    count = 0
+    nifty_val =0
+    prev_spot = 0
+
+    # ---------------count-------------------
+    nifty_val = show_count()[0]
+    count = show_count()[1]
+    print("count", count)
+    # ---------------time-------------------
+    dtobj_indiaa = get_time()
+    # ---------------strike-------------------
+    stike_calculated = strike_calc(nifty_val)
+
+    put_strike = stike_calculated[0]
+    call_strike = stike_calculated[1]
+
+    if(count >=40):
+
+        update_value_in_DB(nifty_val,count,put_strike,"PUT")
+
+        obj2 = Vwap_Telegram_data.objects.last()
+    # ---------------confirmation candle check -------------------
+        if(obj2.TV_candle_conf_red):
+
+    # ======================== place order ======================
+            Place_order(put_strike)
+                    
+            print(f"NSE:NIFTY23316{put_strike}PE")
+
+    if(count <= 10):
+
+        update_value_in_DB(nifty_val,count,call_strike,"CALL")
+        obj2 = Vwap_Telegram_data.objects.last()
+
+    # ---------------confirmation candle check -------------------
+        if(obj2.TV_candle_conf_green):
+    # ======================== place order ======================
+            Place_order(call_strike)
+            
+# ----------------------------------------------- checking exit position---------------------------------
+# Check if position is opened or check if you have save the call 
+
+    # check_exit()
 
 def send_login_otp(fy_id, app_id):
     try:
